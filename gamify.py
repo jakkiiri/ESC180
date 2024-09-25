@@ -18,13 +18,17 @@ def initialize():
     global tired
     
     cur_hedons = 0
-    cur_health = 0
+    cur_health = 0 
     
-    # use cur_star as a boolean to check if the user
-    # is elligible to use the star
+    '''
+    use cur_star as a boolean to check if the user
+    is elligible to use the star
+    '''
     cur_star = False
     cur_star_activity = None
-    # int variable to track the number of stars offered
+    '''
+    int variable to track the number of stars offered
+    '''
     num_star = 0
 
     bored_with_stars = False
@@ -40,58 +44,77 @@ def initialize():
     
     last_finished = -1000
     
-# activity information
-
-# running gives 3 health points (up to 180 minutes)
-# 1 health per minute after this
-# resting between running resets this timer
-
-# Carrying textbooks always gives 2 health points per minute
-
-# resting gives 0 hedons
-
-# Running and carrying textbooks give -2 hedons/minute 
-# if the user is tired and not using a star
-# resting less than 2 hours will make the user tired 
-
-# if user is not tired, running gives 2 hedons / minute
-# for the first ten minutes, and -2 hedons/min for every 
-# minute after the first 10
-
-# if user is not tired, carrying textbooks gives 1 hedon/min
-# for the first 20 mins, and -1 hedon / min after
-
-# if star is offered and used right away, additional
-# 3 hedons / min for at most 10 mins.  This effect only
-# works for the first time the activity is performed
-# right after
-
-# if three stars are offered within the span of 2 hours
-# user loses interests and stars do not function
-# for the rest 
-            
-
-def star_can_be_taken(activity):
-    pass
-
-    
+'''activity information
+The user starts out with 0 health points, and 0 hedons.
+• The user is always either running, carrying textbooks, or resting.
+• Running gives 3 health points per minute for up to 180 minutes, and 1 health point per minute for
+every minute over 180 minutes that the user runs. (Note that if the user runs for 90 minutes, then
+rests for 10 minutes, then runs for 110 minutes, the user will get 600 health points, since they rested
+in between the times that they ran.)
+• Carrying textbooks always gives 2 health points per minute.
+• Resting gives 0 hedons per minute.
+• Both running and carrying textbooks give -2 hedons per minute if the user is tired and isn’t using
+a star (definition: the user is tired if they finished running or carrying textbooks less than 2 hours
+before the current activity started.) For example, for the purposes of this rule, the user will be tired
+if they run for 2 minutes, and then start running again straight away.
+Engineering Science, University of Toronto Page 4 of 8
+ESC 180 H1F Project # 1 — Gamification of Exercise Fall 2024
+• If the user is not tired, running gives 2 hedons per minute for the first 10 minutes of running, and -2
+hedons per minute for every minute after the first 10.
+• If the user is not tired, carrying textbooks gives 1 hedon per minute for the first 20 minutes, and -1
+hedon per minute for every minute after the first 20.
+• If a star is offered for a particular activity and the user takes the star right away, the user gets an
+additional 3 hedons per minute for at most 10 minutes. Note that the user only gets 3 hedons per
+minute for the first activity they undertake, and do not get the hedons due to the star if they decide
+to keep performing the activity:
+offer_star("running")
+perform_activity("running", 5) # gets extra hedons
+perform_activity("running", 2) # no extra hedons
+• If three stars are offered within the span of 2 hours, the user loses interest, and will not get additional
+hedons due to stars for the rest of the simulation.
+'''   
 def perform_activity(activity, duration):
     
     global cur_star
     global cur_star_activity
     global cur_hedons
+    global cur_health
+    global cur_time
     global tired
 
+    ''' check if the player will be tired for this activity '''
+    
+    total_duration = duration
     # running conditions
     if (activity == "running"):
-        # check duration for health
-        if (duration <= 180):
+        ''' updating health '''
+        ''' check if last activity was also running '''
+        if last_activity == activity:
+            total_duration = last_activity_duration + duration
+
+        ''' check if combined duration is under 180 minutes, add health accordingly '''
+        if (total_duration <= 180):
             cur_health += duration * 3
         else:
-            # get sum of the first 180 minutes
-            # with the additional minutes
-            cur_health += (180 * 3) + (duration - 180)
-        # if user is tired
+            ''' account for if last_activity_duration greater than or less than 180 minutes '''
+            if last_activity ==  activity:
+                if last_activity_duration>180:
+                    cur_health += duration
+                else:
+                    cur_health += (180-last_activity_duration) * 3 + (total_duration - 180)
+            else:
+                cur_health += 180*3 + (duration-180)
+
+        ''' updating hedons'''
+        ''' check whether player is tired, and update hedons accordingly '''
+        hedons_per_min = 0
+        if not bored_with_stars:
+            if star_can_be_taken(activity):
+                hedons_per_min += 3
+        if tired:
+            hedons_per_min -= 2
+        
+
         if (tired):
             # check star
             # check if user used star 
@@ -164,6 +187,19 @@ def perform_activity(activity, duration):
                 # reset cur_star
                 cur_star = False
 
+# update functions
+def update_time(time):
+    global cur_time
+    cur_time += time
+
+def update_health(health):
+    global cur_health
+    cur_health += health
+
+def update_hedons(hedon):
+    global cur_hedons
+    cur_hedons += hedon
+
 # this function returns the cur_hedons as an integer
 def get_cur_hedons():
     global cur_hedons
@@ -174,6 +210,12 @@ def get_cur_health():
     global cur_health
     return cur_health
     
+def star_can_be_taken(activity):
+    if cur_star_activity == activity and cur_star:
+        return True
+    else:
+        return False
+
 def offer_star(activity):
     pass
         
