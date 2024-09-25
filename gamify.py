@@ -80,6 +80,7 @@ def perform_activity(activity, duration):
     global cur_star
     global cur_star_activity
     global cur_hedons
+    global tired
 
     # running conditions
     if (activity == "running"):
