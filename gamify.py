@@ -46,7 +46,8 @@ def perform_activity(activity, duration):
     global cur_star
     global last_finished
     global last_activity
-    
+    global last_activity_duration
+
     ''' check if the player will be tired for this activity '''
     is_tired()
     ''' update cur_time '''
@@ -162,8 +163,11 @@ def perform_activity(activity, duration):
                     cur_hedons += 3*duration
                 ''' reset cur_star '''
                 cur_star = False
-
+    print(last_activity, activity)
+    print(last_activity_duration, duration)
     last_activity = activity
+    last_activity_duration = duration
+    
 
 
 ''' this function returns the cur_hedons as an integer '''
@@ -238,8 +242,12 @@ def most_fun_activity_minute():
     else:
         hedon_textbook += 1
         hedon_running += 2
-
-    return max(max(hedon_textbook, hedon_running), hedon_rest)
+    if max(max(hedon_textbook, hedon_running), hedon_rest) == hedon_rest:
+        return 'resting'
+    if max(max(hedon_textbook, hedon_running), hedon_rest) == hedon_running:
+        return 'running'
+    if max(max(hedon_textbook, hedon_running), hedon_rest) == hedon_textbook:
+        return 'textbooks'
             
 
         
@@ -269,15 +277,6 @@ def estimate_health_delta(activity, duration):
         
 if __name__ == '__main__':
     initialize()
-    offer_star('running')
-    perform_activity("running", 20)
-    print(get_cur_health())
-    print(get_cur_hedons())
-    perform_activity('textbooks', 10)
-    perform_activity('resting', 120)
-    print(get_cur_health())
-    print(get_cur_hedons())
-    '''
     perform_activity("running", 30)    
     print(get_cur_hedons())            # -20 = 10 * 2 + 20 * (-2)             # Test 1
     print(get_cur_health())            # 90 = 30 * 3                          # Test 2           		
@@ -295,6 +294,6 @@ if __name__ == '__main__':
     perform_activity("running", 170)
     print(get_cur_health())            # 700 = 210 + 160 * 3 + 10 * 1         # Test 9
     print(get_cur_hedons())            # -430 = -90 + 170 * (-2)              # Test 10
-    '''
+    
     
     
