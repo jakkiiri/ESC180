@@ -5,7 +5,9 @@ def initialize():
     global cur_time
     global last_activity, last_activity_duration
     global cur_star
+    # True or False
     global cur_star_activity
+    # = 'running', 'textbooks'
     global num_star
     global star_time_1, star_time_2, star_time_3
     global last_finished
@@ -163,8 +165,6 @@ def perform_activity(activity, duration):
                     cur_hedons += 3*duration
                 ''' reset cur_star '''
                 cur_star = False
-    print(last_activity, activity)
-    print(last_activity_duration, duration)
     last_activity = activity
     last_activity_duration = duration
     
