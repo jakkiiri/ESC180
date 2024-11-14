@@ -40,9 +40,10 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
             backOpen = False
         if (y_start == 0) or (x_start == 0):
             frontOpen = False
-        elif (board[y_end-1][x_start-1] != " "):
+        elif (board[y_start-1][x_start-1] != " "):
             frontOpen = False 
     else:
+        # dy=1, dx=-1
         y_start = y_end - length + 1
         x_start = x_end + length - 1
         if (y_end == 7) or (x_end == 0):
@@ -671,7 +672,5 @@ def some_tests():
   
             
 if __name__ == '__main__':
-    #play_gomoku(8)
-    board = make_empty_board(8)
-    put_seq_on_board(board, 2,2,0,1,5,'b')
-    print(is_win(board))
+    play_gomoku(8)
+    
