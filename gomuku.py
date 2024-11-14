@@ -71,6 +71,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
 def detect_row(board, col, y_start, x_start, length, d_y, d_x):
     # possible (dy,dx): (0,1), (1,0), (1,1), (1,-1)
     # length >= 2
+    # assume start y,x on edges - assume to be top and left edges
     open_seq_count = 0
     semi_open_seq_count = 0
     cur_len = 0
@@ -100,6 +101,14 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
     
 def detect_rows(board, col, length):
     open_seq_count, semi_open_seq_count = 0, 0
+    # direction: (dy, dx)
+    # left-right: (0, 1)
+    # top-bottom: (1, 0)
+    # upL-lowR: (1, 1)
+    # upR-lowL: (1, -1)
+    # top-left corner - check left-right, top-bottom, upL-lowR
+    # horizontal - check top-bottom, upL-lowR, upR-lowL
+    # vertical - check left-right, upL-lowR, upR-lowL
     
     return open_seq_count, semi_open_seq_count
     
