@@ -109,7 +109,56 @@ def detect_rows(board, col, length):
     # top-left corner - check left-right, top-bottom, upL-lowR
     # horizontal - check top-bottom, upL-lowR, upR-lowL
     # vertical - check left-right, upL-lowR, upR-lowL
+
+    #top-left corner
+    y_start = 0
+    x_start = 0
+    # left-right
+    open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 0, 1)
+    open_seq_count += open_temp
+    semi_open_seq_count += semi_temp
+    # top-bottom
+    open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, 0)
+    open_seq_count += open_temp
+    semi_open_seq_count += semi_temp
+    # upL-lowR
+    open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, 1)
+    open_seq_count += open_temp
+    semi_open_seq_count += semi_temp
+
+    # horizontal - move along x - board[0][x]
+    # y_start = 0
+    for i in range(1,len(board[0])):
+        x_start = i
+        # top-bottom
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, 0)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
+        # upL-lowR
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, 1)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
+        # upR-lowL
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, -1)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
     
+    # vertical - move along y - board[y][0]
+    x_start = 0
+    for i in range(1, len(board)):
+        # left-right
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 0, 1)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
+        # upL-lowR
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, 1)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
+        # upR-lowL
+        open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 1, -1)
+        open_seq_count += open_temp
+        semi_open_seq_count += semi_temp
+        
     return open_seq_count, semi_open_seq_count
     
 def search_max(board):
