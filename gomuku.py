@@ -13,7 +13,60 @@ def is_empty(board):
     
     
 def is_bounded(board, y_end, x_end, length, d_y, d_x):
-    pass
+    # booleans to check each side of the sequence
+    frontOpen = True
+    backOpen = True
+    # different protocals for each direction
+    if d_y == 0 and d_x == 1:
+        x_start = x_end - length
+        if (x_end == 7):
+            backOpen = False
+        elif (board[y_end][x_end + 1] != " "):
+            backOpen = False
+        if (x_start == 0):
+            frontOpen = False
+        elif (board[y_end][x_start - 1] != " "):
+            frontOpen = False 
+    elif d_y == 1 and d_x == 0:
+        y_start = y_end - length
+        if (y_end == 7):
+            backOpen = False
+        elif (board[y_end+1][x_end] != " "):
+            backOpen = False
+        if (y_start == 0):
+            frontOpen = False
+        elif (board[y_end-1][x_start] != " "):
+            frontOpen = False 
+    elif d_y == 1 and d_x == 1:
+        y_start = y_end - length
+        x_start = x_end - length
+        if (y_end == 7) or (x_end == 7):
+            backOpen = False
+        elif (board[y_end+1][x_end+1] != " "):
+            backOpen = False
+        if (y_start == 0) or (x_start == 0):
+            frontOpen = False
+        elif (board[y_end-1][x_start-1] != " "):
+            frontOpen = False 
+    else:
+        y_start = y_end - length
+        x_start = x_end + length
+        if (y_end == 7) or (x_end == 0):
+            backOpen = False
+        elif (board[y_end+1][x_end-1] != " "):
+            backOpen = False
+        if (y_start == 0) or (x_start == 0):
+            frontOpen = False
+        elif (board[y_start-1][x_start+1] != " "):
+            frontOpen = False
+    if (frontOpen and backOpen):
+        return "OPEN"
+    elif (frontOpen or backOpen):
+        return "SEMIOPEN"
+    else:
+        return "CLOSED"
+
+
     
 def detect_row(board, col, y_start, x_start, length, d_y, d_x):
     open_seq_count = 0
