@@ -49,7 +49,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
             backOpen = False
         elif (board[y_end+1][x_end-1] != " "):
             backOpen = False
-        if (y_start == 0) or (x_start == 0):
+        if (y_start == 0) or (x_start == 7):
             frontOpen = False
         elif (board[y_start-1][x_start+1] != " "):
             frontOpen = False
