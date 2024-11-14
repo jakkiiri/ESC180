@@ -1,3 +1,8 @@
+'''
+To Do:
+
+'''
+
 
 def is_empty(board):
     pass
@@ -17,6 +22,7 @@ def detect_rows(board, col, length):
 def search_max(board):
     return move_y, move_x
     
+#don't change
 def score(board):
     MAX_SCORE = 100000
     
@@ -49,7 +55,7 @@ def score(board):
 def is_win(board):
     pass
 
-
+#don't change
 def print_board(board):
     
     s = "*"
@@ -77,12 +83,12 @@ def make_empty_board(sz):
     return board
                 
 
-
+#don't change
 def analysis(board):
     for c, full_name in [["b", "Black"], ["w", "White"]]:
         print("%s stones" % (full_name))
         for i in range(2, 6):
-            open, semi_open = detect_rows(board, c, i);
+            open, semi_open = detect_rows(board, c, i)
             print("Open rows of length %d: %d" % (i, open))
             print("Semi-open rows of length %d: %d" % (i, semi_open))
         
@@ -90,7 +96,7 @@ def analysis(board):
     
 
         
-    
+#don't change
 def play_gomoku(board_size):
     board = make_empty_board(board_size)
     board_height = len(board)
@@ -129,7 +135,7 @@ def play_gomoku(board_size):
             return game_res
         
             
-            
+#don't change        
 def put_seq_on_board(board, y, x, d_y, d_x, length, col):
     for i in range(length):
         board[y][x] = col        
