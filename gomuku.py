@@ -86,7 +86,7 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
             if cur_len == length:
                 y_end = cur_y-d_y
                 x_end = cur_x-d_x
-                seq_type = detect_row(board, y_end, x_end, length, d_y, d_x)
+                seq_type = is_bounded(board, y_end, x_end, length, d_y, d_x)
                 if seq_type == "OPEN":
                     open_seq_count+=1
                 if seq_type == "SEMIOPEN":
@@ -195,7 +195,8 @@ def score(board):
 
     
 def is_win(board):
-    pass
+    # check for winning
+    detect
 
 #don't change
 def print_board(board):
