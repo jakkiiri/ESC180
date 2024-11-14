@@ -42,7 +42,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
             frontOpen = False
         elif (board[y_start-1][x_start-1] != " "):
             frontOpen = False 
-    else:
+    elif d_y == 1 and d_x == -1:
         # dy=1, dx=-1
         y_start = y_end - length + 1
         x_start = x_end + length - 1
