@@ -195,8 +195,16 @@ def score(board):
 
     
 def is_win(board):
-    # check for winning
-    detect
+    if (detect_rows(board, "w", 5) [0] > 0) or (detect_rows(board, "w", 5) [1] > 0):
+        return "White won"
+    elif (detect_rows(board, "b", 5) [0] > 0) or (detect_rows(board, "b", 5) [1] > 0):
+        return "Black won"
+    else:
+        for x in board:
+            for y in x:
+                if y == " ":
+                    return "Continue playing"
+        return "Draw"
 
 #don't change
 def print_board(board):
