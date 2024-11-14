@@ -162,6 +162,28 @@ def detect_rows(board, col, length):
     return open_seq_count, semi_open_seq_count
     
 def search_max(board):
+    # evaluates score for every position, returns move with highest score
+    max_score = -1
+    move_y = 0
+    move_x = 0
+    for y in range(len(board)):
+        for x in range(len(board)):
+            # create new deep copy of current board
+            # aka virtual board
+            future = []
+            for sub in board:
+                future.append(sub[:])
+            # place piece in virtual board and evaluate
+            future[y][x] = 'b'
+            temp_score = score(future)
+            # if winning immediately return
+            if temp_score == 100000:
+                return y, x
+            # compares this move to best known move
+            if temp_score > max_score:
+                max_score = temp_score
+                move_y = y
+                move_x = x
     return move_y, move_x
     
 #don't change
@@ -283,6 +305,8 @@ def put_seq_on_board(board, y, x, d_y, d_x, length, col):
         board[y][x] = col        
         y += d_y
         x += d_x
+
+
 
 
 def test_is_empty():
@@ -425,10 +449,10 @@ def some_tests():
     #     
     
     y = 5; x = 3; d_x = -1; d_y = 1; length = 1
-    put_seq_on_board(board, y, x, d_y, d_x, length, "b");
-    print_board(board);
-    analysis(board);
-    
+    put_seq_on_board(board, y, x, d_y, d_x, length, "b")
+    print_board(board)
+    analysis(board)
+
     #        Expected output:
     #           *0|1|2|3|4|5|6|7*
     #           0 | | | | |w|b| *
