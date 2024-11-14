@@ -140,6 +140,7 @@ def detect_rows(board, col, length):
     # vertical - move along y - board[y][0]
     x_start = 0
     for i in range(1, len(board)):
+        y_start = i
         # left-right
         open_temp, semi_temp = detect_row(board, col, y_start, x_start, length, 0, 1)
         open_seq_count += open_temp
@@ -210,7 +211,8 @@ def score(board):
             50   * open_b[3]                     + 
             10   * semi_open_b[3]                +  
             open_b[2] + semi_open_b[2] - open_w[2] - semi_open_w[2])
-    
+
+'''    
 def check_win_row(board, col, y_start, x_start, length, d_y, d_x):
     # possible (dy,dx): (0,1), (1,0), (1,1), (1,-1)
     # length - typically used for 5 
@@ -242,7 +244,8 @@ def check_win_row(board, col, y_start, x_start, length, d_y, d_x):
         cur_y+=d_y
         cur_x+=d_x
     return open_seq_count, semi_open_seq_count, closed_count
-
+'''
+'''
 def check_win(board, col, length):
     open_seq_count, semi_open_seq_count, closed_count = 0, 0, 0
     # direction: (dy, dx)
@@ -296,6 +299,7 @@ def check_win(board, col, length):
     # vertical - move along y - board[y][0]
     x_start = 0
     for i in range(1, len(board)):
+        y_start = i
         # left-right
         open_temp, semi_temp, closed_temp= check_win_row(board, col, y_start, x_start, length, 0, 1)
         open_seq_count += open_temp
@@ -313,11 +317,90 @@ def check_win(board, col, length):
         closed_count += closed_temp
         
     return open_seq_count, semi_open_seq_count, closed_count
+'''
+
+def check_win_row(board, col, y_start, x_start, length, d_y, d_x):
+    # possible (dy,dx): (0,1), (1,0), (1,1), (1,-1)
+    # length - typically used for 5 
+    # assume start y,x on edges - assume to be top and left edges
+    cur_y = y_start
+    cur_x = x_start
+    cur_len = 0
+    count = 0
+    while cur_y<len(board) and cur_x<len(board[0]):
+
+        if board[cur_y][cur_x] == col:
+            cur_len+=1
+        else:
+            if cur_len >= length:
+                count+=1
+            cur_len=0
+        cur_y+=d_y
+        cur_x+=d_x
+    return count
+
+def check_win(board, col, length):
+    count=0
+    # direction: (dy, dx)
+    # left-right: (0, 1)
+    # top-bottom: (1, 0)
+    # upL-lowR: (1, 1)
+    # upR-lowL: (1, -1)
+    # top-left corner - check left-right, top-bottom, upL-lowR
+    # horizontal - check top-bottom, upL-lowR, upR-lowL
+    # vertical - check left-right, upL-lowR, upR-lowL
+
+    #top-left corner
+    y_start = 0
+    x_start = 0
+    # left-right
+    count += check_win_row(board, col, y_start, x_start, length, 0, 1)
+    # top-bottom
+    count += check_win_row(board, col, y_start, x_start, length, 1, 0)
+    # upL-lowR
+    count += check_win_row(board, col, y_start, x_start, length, 1, 1)
+
+    # horizontal - move along x - board[0][x]
+    # y_start = 0
+    for i in range(1,len(board[0])):
+        x_start = i
+        # top-bottom
+        count += check_win_row(board, col, y_start, x_start, length, 1, 0)
+        # upL-lowR
+        count += check_win_row(board, col, y_start, x_start, length, 1, 1)
+        # upR-lowL
+        count += check_win_row(board, col, y_start, x_start, length, 1, -1)
+    
+    # vertical - move along y - board[y][0]
+    x_start = 0
+    for i in range(1, len(board)):
+        y_start = i
+        # left-right
+        count += check_win_row(board, col, y_start, x_start, length, 0, 1)
+        # upL-lowR
+        count += check_win_row(board, col, y_start, x_start, length, 1, 1)
+        # upR-lowL
+        count += check_win_row(board, col, y_start, x_start, length, 1, -1)
+
+    return count
+'''
+def is_win(board):
+    if (check_win(board, "w", 5)[0] > 0) or (check_win(board, "w", 5)[1] > 0) or (check_win(board, "w", 5)[2]>0):
+        return "White won"
+    elif (check_win(board, "b", 5)[0] > 0) or (check_win(board, "b", 5)[1] > 0) or (check_win(board, "b", 5)[2]>0):
+        return "Black won"
+    else:
+        for x in board:
+            for y in x:
+                if y == " ":
+                    return "Continue playing"
+        return "Draw"
+'''
 
 def is_win(board):
-    if (check_win(board, "w", 5)[0] > 0) or (check_win(board, "w", 5)[1] > 0) or (check_win(board, "w", 5)[2]):
+    if (check_win(board, "w", 5) > 0):
         return "White won"
-    elif (check_win(board, "b", 5)[0] > 0) or (check_win(board, "b", 5)[1] > 0) or (check_win(board, "b", 5)[2]):
+    elif (check_win(board, "b", 5) > 0):
         return "Black won"
     else:
         for x in board:
@@ -588,5 +671,7 @@ def some_tests():
   
             
 if __name__ == '__main__':
-    play_gomoku(8)
-    
+    #play_gomoku(8)
+    board = make_empty_board(8)
+    put_seq_on_board(board, 2,2,0,1,5,'b')
+    print(is_win(board))
