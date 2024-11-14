@@ -5,13 +5,20 @@ To Do:
 
 
 def is_empty(board):
-    pass
+    for i in range(board):
+        for j in range(board[0]):
+            if board[i][j] != " ":
+                return False
+    return True
     
     
 def is_bounded(board, y_end, x_end, length, d_y, d_x):
     pass
     
 def detect_row(board, col, y_start, x_start, length, d_y, d_x):
+    open_seq_count = 0
+    semi_open_seq_count = 0
+    
     return open_seq_count, semi_open_seq_count
     
 def detect_rows(board, col, length):
