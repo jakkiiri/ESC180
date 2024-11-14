@@ -16,14 +16,38 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
     pass
     
 def detect_row(board, col, y_start, x_start, length, d_y, d_x):
+    # possible (dy,dx): (0,1), (1,0), (1,1), (1,-1)
+    # length >= 2
     open_seq_count = 0
     semi_open_seq_count = 0
-    
+    cur_len = 0
+    cur_y = y_start
+    cur_x = x_start
+    #count = 0
+    while cur_y<len(board) and cur_x<len(board[0]):
+
+        if board[cur_y][cur_x] == col:
+            cur_len+=1
+        else:
+            if cur_len == length:
+                y_end = cur_y-d_y
+                x_end = cur_x-d_x
+                seq_type = detect_row(board, y_end, x_end, length, d_y, d_x)
+                if seq_type == "OPEN":
+                    open_seq_count+=1
+                if seq_type == "SEMIOPEN":
+                    semi_open_seq_count+=1
+            cur_len=0
+
+        #count+=1
+        cur_y+=d_y
+        cur_x+=d_x
+
     return open_seq_count, semi_open_seq_count
     
 def detect_rows(board, col, length):
-    ####CHANGE ME
     open_seq_count, semi_open_seq_count = 0, 0
+    
     return open_seq_count, semi_open_seq_count
     
 def search_max(board):
