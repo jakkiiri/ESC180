@@ -29,7 +29,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
             backOpen = False
         if (y_start == 0):
             frontOpen = False
-        elif (board[y_end-1][x_end] != " "):
+        elif (board[y_start-1][x_end] != " "):
             frontOpen = False 
     elif d_y == 1 and d_x == 1:
         y_start = y_end - length + 1
@@ -317,7 +317,7 @@ def check_win(board, col, length):
 def is_win(board):
     if (check_win(board, "w", 5)[0] > 0) or (check_win(board, "w", 5)[1] > 0) or (check_win(board, "w", 5)[2]):
         return "White won"
-    elif (detect_rows(board, "b", 5)[0] > 0) or (detect_rows(board, "b", 5)[1] > 0) or (check_win(board, "b", 5)[2]):
+    elif (check_win(board, "b", 5)[0] > 0) or (check_win(board, "b", 5)[1] > 0) or (check_win(board, "b", 5)[2]):
         return "Black won"
     else:
         for x in board:
