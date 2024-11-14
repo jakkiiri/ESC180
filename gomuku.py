@@ -6,7 +6,7 @@ To Do:
 
 def is_empty(board):
     for i in range(len(board)):
-        for j in range(len(board[0])):
+        for j in range(len(board[i])):
             if board[i][j] != " ":
                 return False
     return True
