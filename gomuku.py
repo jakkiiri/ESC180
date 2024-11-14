@@ -1,9 +1,3 @@
-'''
-To Do:
-
-'''
-
-
 def is_empty(board):
     for i in range(len(board)):
         for j in range(len(board[i])):
@@ -168,22 +162,24 @@ def search_max(board):
     move_x = 0
     for y in range(len(board)):
         for x in range(len(board)):
-            # create new deep copy of current board
-            # aka virtual board
-            future = []
-            for sub in board:
-                future.append(sub[:])
-            # place piece in virtual board and evaluate
-            future[y][x] = 'b'
-            temp_score = score(future)
-            # if winning immediately return
-            if temp_score == 100000:
-                return y, x
-            # compares this move to best known move
-            if temp_score > max_score:
-                max_score = temp_score
-                move_y = y
-                move_x = x
+            # if not occupied:
+            if board[y][x] == " ":
+                # create new deep copy of current board
+                # aka virtual board
+                future = []
+                for sub in board:
+                    future.append(sub[:])
+                # place piece in virtual board and evaluate
+                future[y][x] = 'b'
+                temp_score = score(future)
+                # if winning immediately return
+                if temp_score == 100000:
+                    return y, x
+                # compares this move to best known move
+                if temp_score > max_score:
+                    max_score = temp_score
+                    move_y = y
+                    move_x = x
     return move_y, move_x
     
 #don't change
@@ -264,11 +260,7 @@ def analysis(board):
             open, semi_open = detect_rows(board, c, i)
             print("Open rows of length %d: %d" % (i, open))
             print("Semi-open rows of length %d: %d" % (i, semi_open))
-        
-    
-    
 
-        
 #don't change
 def play_gomoku(board_size):
     board = make_empty_board(board_size)
@@ -292,10 +284,6 @@ def play_gomoku(board_size):
         if game_res in ["White won", "Black won", "Draw"]:
             return game_res
             
-            
-        
-        
-        
         print("Your move:")
         move_y = int(input("y coord: "))
         move_x = int(input("x coord: "))
