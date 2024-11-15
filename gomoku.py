@@ -77,7 +77,7 @@ def detect_row(board, col, y_start, x_start, length, d_y, d_x):
 
         if board[cur_y][cur_x] == col:
             cur_len+=1
-            if cur_x == len(board[0]) - 1 or len(board) - 1 == 7:
+            if cur_x == len(board[0]) - 1 or cur_y == len(board) - 1:
                 #edge case
                 y_end = cur_y
                 x_end = cur_x
