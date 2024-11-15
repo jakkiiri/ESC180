@@ -13,7 +13,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
     # different protocals for each direction
     if d_y == 0 and d_x == 1:
         x_start = x_end - length
-        if (x_end == len(board[0])):
+        if (x_end == 7):
             backOpen = False
         elif (board[y_end][x_end + 1] != " "):
             backOpen = False
@@ -23,7 +23,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
             frontOpen = False 
     elif d_y == 1 and d_x == 0:
         y_start = y_end - length
-        if (y_end == len(board)):
+        if (y_end == 7):
             backOpen = False
         elif (board[y_end+1][x_end] != " "):
             backOpen = False
@@ -34,7 +34,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
     elif d_y == 1 and d_x == 1:
         y_start = y_end - length
         x_start = x_end - length
-        if (y_end == len(board)) or (x_end == len(board[0])):
+        if (y_end == 7) or (x_end == 7):
             backOpen = False
         elif (board[y_end+1][x_end+1] != " "):
             backOpen = False
@@ -45,7 +45,7 @@ def is_bounded(board, y_end, x_end, length, d_y, d_x):
     else:
         y_start = y_end - length
         x_start = x_end + length
-        if (y_end == len(board)) or (x_end == 0):
+        if (y_end == 7) or (x_end == 0):
             backOpen = False
         elif (board[y_end+1][x_end-1] != " "):
             backOpen = False
