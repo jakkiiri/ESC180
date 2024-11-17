@@ -408,16 +408,16 @@ def is_win(board):
 '''
 
 def is_win(board):
-    if (check_win(board, "w", 5) > 0):
-        return "White won"
-    elif (check_win(board, "b", 5) > 0):
-        return "Black won"
-    else:
-        for x in board:
-            for y in x:
-                if y == " ":
-                    return "Continue playing"
-        return "Draw"
+    for length in [5,6,7,8]:
+        if (check_win(board, "w", length) > 0):
+            return "White won"
+        if (check_win(board, "b", length) > 0):
+            return "Black won"
+    for x in board:
+        for y in x:
+            if y == " ":
+                return "Continue playing"
+    return "Draw"
 
 #don't change
 def print_board(board):
