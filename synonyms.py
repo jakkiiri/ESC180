@@ -33,27 +33,26 @@ def cosine_similarity(vec1, vec2):
     return top / bottom
 
 def build_semantic_descriptors(sentences):
-    # Initialize dictionary to store semantic descriptors
     descriptors = {}
     
     # Process each sentence
     for sentence in sentences:
         # Convert words to lowercase and create a set to avoid counting duplicates
-        words = set(word.lower() for word in sentence)
+        unique_words = []
+        for word in sentence:
+            if word.lower() not in unique_words:
+                unique_words.append(word.lower())
         
         # For each word in the sentence
-        for word in words:
+        for i, word in enumerate(unique_words):
             # Initialize word's descriptor if not already present
             if word not in descriptors:
                 descriptors[word] = {}
             
             # Count co-occurrences with other words in same sentence
-            for other_word in words:
+            for other_word in unique_words:
                 if other_word != word:
-                    if other_word not in descriptors[word]:
-                        descriptors[word][other_word] = 1
-                    else:
-                        descriptors[word][other_word] += 1
+                    descriptors[word][other_word] = descriptors[word].get(other_word, 0) + 1
     
     return descriptors
 
