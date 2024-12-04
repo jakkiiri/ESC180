@@ -1,134 +1,107 @@
-'''Semantic Similarity: starter code
+'''Semantic Similarity: corrected code without using re
 
 Author: Michael Guerzhoy. Last modified: Nov. 20, 2023.
 '''
 
 import math
 
-
 def norm(vec):
-    '''Return the norm of a vector stored as a dictionary, as 
-    described in the handout for Project 3.
-    '''
-    
-    sum_of_squares = 0.0  
-    for x in vec:
-        sum_of_squares += vec[x] * vec[x]
-    
+    '''Return the norm of a vector stored as a dictionary.'''
+    sum_of_squares = sum(value * value for value in vec.values())
     return math.sqrt(sum_of_squares)
 
-
 def cosine_similarity(vec1, vec2):
-    top = 0
-    bottom = 0
-    for x in vec1.keys():
-        if x in vec2.keys():
-            top += vec1.get(x) * vec2.get(x)
-    a = 0
-    b = 0
-    for x, y in zip(vec1.values(), vec2.values()):
-        a += x**2
-        b += y**2
-    bottom = math.sqrt(a * b)
-    return top / bottom
+    '''Compute the cosine similarity between two vectors stored as dictionaries.'''
+    top = sum(vec1.get(key, 0) * vec2.get(key, 0) for key in vec1)
+    norm1 = norm(vec1)
+    norm2 = norm(vec2)
+    if norm1 == 0 or norm2 == 0:
+        return -1  # Handle zero-vector cases
+    return top / (norm1 * norm2)
 
 def build_semantic_descriptors(sentences):
+    '''Build semantic descriptors from a list of sentences.'''
     descriptors = {}
-    
-    # Process each sentence
     for sentence in sentences:
-        # Convert words to lowercase and create a set to avoid counting duplicates
-        unique_words = []
-        for word in sentence:
-            if word.lower() not in unique_words:
-                unique_words.append(word.lower())
-        
-        # For each word in the sentence
-        for i, word in enumerate(unique_words):
-            # Initialize word's descriptor if not already present
+        unique_words = set(word.lower() for word in sentence)
+        for word in unique_words:
             if word not in descriptors:
                 descriptors[word] = {}
-            
-            # Count co-occurrences with other words in same sentence
             for other_word in unique_words:
                 if other_word != word:
                     descriptors[word][other_word] = descriptors[word].get(other_word, 0) + 1
-    
     return descriptors
 
 def build_semantic_descriptors_from_files(filenames):
+    '''Build semantic descriptors from text files without using re.'''
     all_sentences = []
+    sentence_endings = '.!?'
     for filename in filenames:
         with open(filename, "r", encoding="latin1") as file:
-            # Read file and convert to lowercase
             text = file.read().lower()
-            
             # Replace sentence-ending punctuation with periods
-            for char in "!?;":
-                text = text.replace(char, ".")
-                
+            for char in sentence_endings:
+                text = text.replace(char, '.')
             # Split into sentences
-            sentences = [s.strip() for s in text.split(".")]
-            
+            sentences = text.split('.')
             for sentence in sentences:
-                # Remove all punctuation from words except apostrophes within words
-                cleaned_sentence = ""
-                for i, char in enumerate(sentence):
-                    # Keep apostrophes that are between letters (contractions)
-                    if char == "'" and i > 0 and i < len(sentence)-1 and \
-                       sentence[i-1].isalnum() and sentence[i+1].isalnum():
+                # Process the sentence to remove unwanted punctuation
+                cleaned_sentence = ''
+                i = 0
+                while i < len(sentence):
+                    char = sentence[i]
+                    if char.isalnum() or char.isspace():
                         cleaned_sentence += char
-                    # Keep alphanumeric characters and spaces
-                    elif char.isalnum() or char.isspace():
-                        cleaned_sentence += char
-                    # Replace other punctuation with spaces
+                    elif char == "'":
+                        # Keep apostrophes between alphanumeric characters (e.g., don't, Isaac's)
+                        if i > 0 and i < len(sentence) - 1:
+                            prev_char = sentence[i - 1]
+                            next_char = sentence[i + 1]
+                            if prev_char.isalnum() and next_char.isalnum():
+                                cleaned_sentence += char
+                            else:
+                                cleaned_sentence += ' '
+                        else:
+                            cleaned_sentence += ' '
                     else:
-                        cleaned_sentence += " "
-                
+                        cleaned_sentence += ' '
+                    i += 1
                 # Split into words and filter out empty strings
                 words = [word for word in cleaned_sentence.split() if word]
                 if words:
                     all_sentences.append(words)
-    
     return build_semantic_descriptors(all_sentences)
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
+    '''Find the most semantically similar word from choices to the given word.'''
+    word = word.lower()
+    choices = [choice.lower() for choice in choices]
     if word not in semantic_descriptors:
         return choices[0]
-    
     max_similarity = float('-inf')
     most_similar = choices[0]
-    
     for choice in choices:
-        if choice not in semantic_descriptors:
-            similarity = -1
+        if choice in semantic_descriptors:
+            similarity = similarity_fn(semantic_descriptors[word], semantic_descriptors[choice])
         else:
-            similarity = similarity_fn(semantic_descriptors[word], 
-                                    semantic_descriptors[choice])
-        
+            similarity = -1  # Handle cases where the choice is not in descriptors
         if similarity > max_similarity:
             max_similarity = similarity
             most_similar = choice
-    
     return most_similar
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
+    '''Run a semantic similarity test and return the percentage of correct answers.'''
     correct = 0
     total = 0
-    
-    with open(filename, "r") as file:
+    with open(filename, "r", encoding="latin1") as file:
         for line in file:
-            # Split line into words and strip whitespace
-            words = line.strip().split()
-            if len(words) >= 3:  # Ensure valid test case
+            words = line.strip().lower().split()
+            if len(words) >= 3:
                 word, correct_answer = words[0], words[1]
                 choices = words[2:]
-                
-                # Run test and check if answer matches
-                answer = most_similar_word(word, choices, 
-                                        semantic_descriptors, similarity_fn)
+                answer = most_similar_word(word, choices, semantic_descriptors, similarity_fn)
                 if answer == correct_answer:
                     correct += 1
                 total += 1
-    
     return (correct / total) * 100 if total > 0 else 0
