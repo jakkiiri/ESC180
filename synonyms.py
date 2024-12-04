@@ -21,12 +21,12 @@ def norm(vec):
 def cosine_similarity(vec1, vec2):
     top = 0
     bottom = 0
-    for x, y in vec1.keys(), vec2.keys():
-        if (x.lower() == y.lower()):
-            top += vec1.get(x) * vec2.get(y)
+    for x in vec1.keys():
+        if x in vec2.keys():
+            top += vec1.get(x) * vec2.get(x)
     a = 0
     b = 0
-    for x, y in vec1.values(), vec2.values():
+    for x, y in zip(vec1.values(), vec2.values()):
         a += x**2
         b += y**2
     bottom = math.sqrt(a * b)
