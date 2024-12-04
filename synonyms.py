@@ -61,17 +61,33 @@ def build_semantic_descriptors_from_files(filenames):
     all_sentences = []
     for filename in filenames:
         with open(filename, "r", encoding="latin1") as file:
-            # Read file and replace punctuation with periods
+            # Read file and convert to lowercase
             text = file.read().lower()
+            
+            # Replace sentence-ending punctuation with periods
             for char in "!?;":
                 text = text.replace(char, ".")
+                
+            # Split into sentences
+            sentences = [s.strip() for s in text.split(".")]
             
-            # Split into sentences and clean up
-            sentences = text.split(".")
             for sentence in sentences:
-                # Split sentence into words and remove punctuation
-                words = [word.strip(",:;!?()[]{}\"'") for word in sentence.split()]
-                # Only add non-empty word lists
+                # Remove all punctuation from words except apostrophes within words
+                cleaned_sentence = ""
+                for i, char in enumerate(sentence):
+                    # Keep apostrophes that are between letters (contractions)
+                    if char == "'" and i > 0 and i < len(sentence)-1 and \
+                       sentence[i-1].isalnum() and sentence[i+1].isalnum():
+                        cleaned_sentence += char
+                    # Keep alphanumeric characters and spaces
+                    elif char.isalnum() or char.isspace():
+                        cleaned_sentence += char
+                    # Replace other punctuation with spaces
+                    else:
+                        cleaned_sentence += " "
+                
+                # Split into words and filter out empty strings
+                words = [word for word in cleaned_sentence.split() if word]
                 if words:
                     all_sentences.append(words)
     
